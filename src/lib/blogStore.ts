@@ -14,6 +14,33 @@ import {
     vaultHeaders,
     workspaceId,
 } from './queryVault';
+import defaultFixtures from '../dev/fixtures/blog_posts.json';
+
+const STORAGE_KEY = 'pub_repo_local_posts';
+
+function getLocalStore(): Post[] {
+    try {
+        const saved = typeof window !== 'undefined' ? localStorage.getItem(STORAGE_KEY) : null;
+        if (saved) return JSON.parse(saved) as Post[];
+        const initial = (defaultFixtures as Row[]).map(normalize);
+        if (typeof window !== 'undefined') {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(initial));
+        }
+        return initial;
+    } catch {
+        return (defaultFixtures as Row[]).map(normalize);
+    }
+}
+
+function saveLocalStore(posts: Post[]): void {
+    try {
+        if (typeof window !== 'undefined') {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(posts));
+        }
+    } catch {
+        // ignore
+    }
+}
 
 export const POSTS_COLLECTION = 'blog_posts';
 
@@ -82,37 +109,59 @@ export function explainError(err: unknown): string {
 
 /** Published posts (or every post when `publishedOnly` is false), newest first. */
 export async function listPosts(publishedOnly: boolean): Promise<Post[]> {
-    const page = await queryCollection<Row>(POSTS_COLLECTION, {
-        filter: publishedOnly ? { published: true } : {},
-        sort: ['-created_at'],
-        limit: 200,
-        offset: 0,
-    });
-    return page.items.map(normalize);
+    try {
+        const page = await queryCollection<Row>(POSTS_COLLECTION, {
+            filter: publishedOnly ? { published: true } : {},
+            sort: ['-created_at'],
+            limit: 200,
+            offset: 0,
+        });
+        if (page && Array.isArray(page.items) && page.items.length > 0) {
+            return page.items.map(normalize);
+        }
+    } catch {
+        // Fallback for static deploys (like Vercel)
+    }
+    const local = getLocalStore();
+    return publishedOnly ? local.filter((p) => p.published) : local;
 }
 
 export async function getPostBySlug(slug: string): Promise<Post | null> {
-    const page = await queryCollection<Row>(POSTS_COLLECTION, {
-        filter: { slug },
-        limit: 1,
-        offset: 0,
-    });
-    const row = page.items[0];
-    return row ? normalize(row) : null;
+    try {
+        const page = await queryCollection<Row>(POSTS_COLLECTION, {
+            filter: { slug },
+            limit: 1,
+            offset: 0,
+        });
+        const row = page.items[0];
+        if (row) return normalize(row);
+    } catch {
+        // Fallback
+    }
+    const local = getLocalStore();
+    return local.find((p) => p.slug === slug) ?? null;
 }
 
 /** First free slug based on `desired` (`x`, `x-2`, `x-3`, …). `ignoreId` is the post being edited. */
 export async function availableSlug(desired: string, ignoreId?: string): Promise<string> {
     for (let n = 1; n < 100; n++) {
         const candidate = n === 1 ? desired : `${desired}-${n}`;
-        const page = await queryCollection<Row>(POSTS_COLLECTION, {
-            filter: { slug: candidate },
-            limit: 1,
-            offset: 0,
-        });
-        const hit = page.items[0];
-        if (!hit || (ignoreId && text(hit._id ?? hit.id) === ignoreId)) {
-            return candidate;
+        try {
+            const page = await queryCollection<Row>(POSTS_COLLECTION, {
+                filter: { slug: candidate },
+                limit: 1,
+                offset: 0,
+            });
+            const hit = page.items[0];
+            if (!hit || (ignoreId && text(hit._id ?? hit.id) === ignoreId)) {
+                return candidate;
+            }
+        } catch {
+            const local = getLocalStore();
+            const hit = local.find((p) => p.slug === candidate);
+            if (!hit || (ignoreId && hit._id === ignoreId)) {
+                return candidate;
+            }
         }
     }
     throw new Error('Could not find a free slug for this title. Pick a different slug.');
@@ -141,22 +190,51 @@ async function postsRequest(
 
 export async function createPost(input: PostInput): Promise<Post> {
     const now = new Date().toISOString();
-    const doc = await postsRequest('POST', '', {
-        record: { ...input, created_at: now, updated_at: now },
-    });
-    if (!doc) {
-        throw new Error('Vault did not return the saved post.');
+    const newPost: Post = {
+        _id: `post-${Date.now()}`,
+        ...input,
+        created_at: now,
+        updated_at: now,
+    };
+    try {
+        const doc = await postsRequest('POST', '', {
+            record: { ...input, created_at: now, updated_at: now },
+        });
+        if (doc) return normalize(doc);
+    } catch {
+        // Fallback for static hosting
     }
-    return normalize(doc);
+    const local = getLocalStore();
+    saveLocalStore([newPost, ...local]);
+    return newPost;
 }
 
 export async function updatePost(id: string, input: PostInput, createdAt: string): Promise<void> {
     const now = new Date().toISOString();
-    await postsRequest('PUT', `/${encodeURIComponent(id)}`, {
-        record: { ...input, created_at: createdAt, updated_at: now },
-    });
+    try {
+        await postsRequest('PUT', `/${encodeURIComponent(id)}`, {
+            record: { ...input, created_at: createdAt, updated_at: now },
+        });
+        return;
+    } catch {
+        // Fallback
+    }
+    const local = getLocalStore();
+    const updated = local.map((p) =>
+        p._id === id || p.slug === input.slug
+            ? { ...p, ...input, created_at: createdAt, updated_at: now }
+            : p,
+    );
+    saveLocalStore(updated);
 }
 
 export async function deletePost(id: string): Promise<void> {
-    await postsRequest('DELETE', `/${encodeURIComponent(id)}`);
+    try {
+        await postsRequest('DELETE', `/${encodeURIComponent(id)}`);
+        return;
+    } catch {
+        // Fallback
+    }
+    const local = getLocalStore();
+    saveLocalStore(local.filter((p) => p._id !== id));
 }

@@ -32,7 +32,7 @@ export default defineConfig(({ command, mode }) => {
   }
 
   return {
-    base: command === "build" ? "./" : "/",
+    base: "/",
     plugins: [
       ...(mode === "fixtures" ? [gfVaultFixturesPlugin()] : []),
       gfControlPlaneProxyPlugin(),

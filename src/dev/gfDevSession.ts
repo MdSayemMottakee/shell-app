@@ -22,17 +22,21 @@ declare global {
 export async function fetchGfDevSession(): Promise<GfDevSession> {
     try {
         const res = await fetch("/__gf/dev-session", { cache: "no-store" });
-        const body = (await res.json()) as GfDevSession;
-        if (body && typeof body === "object" && "ok" in body) {
-            return body;
+        if (res.ok) {
+            const body = (await res.json()) as GfDevSession;
+            if (body && typeof body === "object" && "ok" in body) {
+                return body;
+            }
         }
-        return { ok: false, error: "Unexpected /__gf/dev-session response." };
     } catch {
-        return {
-            ok: false,
-            error: "Could not reach /__gf/dev-session. Is `npm run dev` running?",
-        };
+        // Fallback for static hosts (Vercel, GitHub Pages) without live Vite dev plugin
     }
+    return {
+        ok: true,
+        workspaceId: "local",
+        apiUrl: "",
+        environment: "mock",
+    };
 }
 
 function notifyHostConfig(): void {
