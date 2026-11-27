@@ -74,10 +74,22 @@ function copyFlatBundle() {
 function createZipArchive() {
     fs.rmSync(zipPath, { force: true });
 
-    const zip = spawnSync('zip', ['-rq', zipPath, '.'], {
+    let zip = spawnSync('zip', ['-rq', zipPath, '.'], {
         cwd: releaseDir,
         stdio: 'inherit',
     });
+
+    if (zip.status !== 0 && process.platform === 'win32') {
+        zip = spawnSync(
+            'powershell',
+            [
+                '-NoProfile',
+                '-Command',
+                `$ProgressPreference = 'SilentlyContinue'; Compress-Archive -Path '${releaseDir}\\*' -DestinationPath '${zipPath}' -Force`,
+            ],
+            { stdio: 'inherit' },
+        );
+    }
 
     if (zip.status !== 0) {
         console.error(
