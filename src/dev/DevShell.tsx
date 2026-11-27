@@ -11,7 +11,7 @@
 
 import React, { useState, useEffect, createContext, useContext } from "react";
 import { BrowserRouter, NavLink, Navigate, Route, Routes } from "react-router-dom";
-import { LayoutDashboard, FileText, ChevronDown, Activity } from "lucide-react";
+import { FileText, ChevronDown, Activity, BarChart3, FolderGit2 } from "lucide-react";
 import App from "../App";
 import { APP_ID } from "../appIdentity";
 import { useAppPath } from "../lib/useAppPath";
@@ -49,16 +49,18 @@ export const useMockAuth = () => useContext(MockAuthContext);
 /* ────── Sidebar ────── */
 
 const navItems = [
-    { segment: "home" as const, label: "Home", icon: <LayoutDashboard size={16} /> },
-    { segment: "manage" as const, label: "Manage posts", icon: <FileText size={16} /> },
+    { segment: "home" as const, label: "Repositories", icon: <FolderGit2 size={16} /> },
+    { segment: "analytics" as const, label: "Analytics", icon: <BarChart3 size={16} /> },
+    { segment: "manage" as const, label: "Manage items", icon: <FileText size={16} /> },
     { segment: "audit" as const, label: "Audit", icon: <Activity size={16} /> },
 ];
 
 const Sidebar: React.FC = () => {
     const homePath = useAppPath("home");
+    const analyticsPath = useAppPath("analytics");
     const managePath = useAppPath("manage");
     const auditPath = useAppPath("audit");
-    const hrefs = { home: homePath, manage: managePath, audit: auditPath };
+    const hrefs = { home: homePath, analytics: analyticsPath, manage: managePath, audit: auditPath };
 
     return (
     <aside style={{

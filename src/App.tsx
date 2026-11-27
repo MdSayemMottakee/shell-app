@@ -9,6 +9,7 @@ import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import './index.css';
 import { FederatedAppRoot } from './lib/FederatedStyleRoot';
+import { AnalyticsPage } from './pages/AnalyticsPage';
 import { AuditPage } from './pages/AuditPage';
 import { HomePage } from './pages/HomePage';
 import { ManagePage } from './pages/ManagePage';
@@ -20,6 +21,7 @@ const App: React.FC = () => (
         <Routes>
             <Route index element={<HomePage />} />
             <Route path="home" element={<HomePage />} />
+            <Route path="analytics" element={<AnalyticsPage />} />
             <Route path="manage" element={<ManagePage />} />
             <Route path="audit" element={<AuditPage />} />
             <Route path="posts/new" element={<PostEditorPage />} />

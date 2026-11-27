@@ -10,11 +10,13 @@ export const AppHeader: React.FC<{ className?: string }> = ({ className }) => {
     const { pathname } = useLocation();
 
     const homePath = useAppPath('home');
+    const analyticsPath = useAppPath('analytics');
     const managePath = useAppPath('manage');
     const auditPath = useAppPath('audit');
 
     const navItems = [
-        { label: 'Blog', to: homePath },
+        { label: 'Repositories', to: homePath },
+        { label: 'Analytics', to: analyticsPath },
         { label: 'Manage', to: managePath },
         { label: 'Audit', to: auditPath },
     ];

@@ -1,7 +1,7 @@
 {
   "version": "1.0",
   "appId": "pub-repo",
-  "name": "Blog Site",
+  "name": "PubRepo Hub",
   "remoteUrl": "",
   "theme": {
     "primaryColor": "#2563EB",
@@ -11,13 +11,19 @@
   "routes": [
     {
       "path": "home",
-      "title": "Blog",
-      "icon": "Home",
+      "title": "Repositories",
+      "icon": "FolderGit2",
+      "layout": []
+    },
+    {
+      "path": "analytics",
+      "title": "Analytics",
+      "icon": "BarChart3",
       "layout": []
     },
     {
       "path": "manage",
-      "title": "Manage posts",
+      "title": "Manage items",
       "icon": "PenLine",
       "layout": []
     },
