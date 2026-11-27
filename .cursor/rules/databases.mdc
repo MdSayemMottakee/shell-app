@@ -1,0 +1,22 @@
+---
+description: Database options — shared PostgreSQL is ready by default; deploy a dedicated Postgres for your own instance; Dataplane is not a database
+alwaysApply: true
+---
+
+# Databases
+
+Dataplane is **not** a database. It is how Groundfloor talks to databases.
+
+When any data or database work starts, say this first. Do not mention
+infrastructure internals:
+
+> You have PostgreSQL ready to use through Dataplane — shared and
+> platform-managed, no deploy step. If you want a dedicated database
+> instead of the shared one, deploy it first. You can use a deployed
+> database through Dataplane, or connect to it on your own.
+
+- **PostgreSQL (shared)** — managed, already there. Default for app data and Vault. No deploy step. Pass engine `postgresql` when creating a collection.
+- **Dedicated PostgreSQL** — what you can deploy today (portal Data → Databases) for your own instance. Then use it through Dataplane or with the connection secrets.
+- Do not offer other engines (ArangoDB, Mongo, Redis, …) as available.
+
+MCP: `docs_get` id `databases`.

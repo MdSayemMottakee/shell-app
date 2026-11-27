@@ -1,0 +1,51 @@
+{
+  "version": "1.0",
+  "appId": "blog",
+  "name": "Blog Site",
+  "remoteUrl": "",
+  "theme": {
+    "primaryColor": "#2563EB",
+    "accentColor": "#7C3AED",
+    "mode": "light"
+  },
+  "routes": [
+    {
+      "path": "home",
+      "title": "Blog",
+      "icon": "Home",
+      "layout": []
+    },
+    {
+      "path": "manage",
+      "title": "Manage posts",
+      "icon": "PenLine",
+      "layout": []
+    },
+    {
+      "path": "audit",
+      "title": "Audit",
+      "icon": "Activity",
+      "layout": []
+    },
+    {
+      "path": "posts/new",
+      "title": "New post",
+      "icon": "Plus",
+      "layout": []
+    },
+    {
+      "path": "posts/:slug",
+      "title": "Post",
+      "icon": "FileText",
+      "layout": [],
+      "hidden": true
+    },
+    {
+      "path": "posts/:slug/edit",
+      "title": "Edit post",
+      "icon": "PenLine",
+      "layout": [],
+      "hidden": true
+    }
+  ]
+}

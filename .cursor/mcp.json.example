@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "groundfloor": {
+      "command": "/FULL/PATH/TO/node",
+      "args": [
+        "/FULL/PATH/TO/lib/node_modules/@groundfloorcloud/mcp/dist/index.js"
+      ]
+    }
+  }
+}

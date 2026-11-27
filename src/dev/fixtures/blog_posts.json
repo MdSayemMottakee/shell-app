@@ -1,0 +1,35 @@
+[
+  {
+    "_id": "fx-1",
+    "slug": "welcome-to-my-blog",
+    "title": "Welcome to my blog",
+    "excerpt": "What this blog is and how it is built.",
+    "body": "This blog is a **Groundfloor Shell app**. Posts live in the `blog_posts` Data Vault collection.\n\n## What you can do\n\n- Read published posts\n- Write drafts in Markdown\n- Publish when ready\n\n> Drafts are only visible to people who can read the collection.",
+    "published": true,
+    "author": "Admin",
+    "created_at": "2026-11-24T08:00:03.194Z",
+    "updated_at": "2026-11-24T08:00:03.194Z"
+  },
+  {
+    "_id": "fx-2",
+    "slug": "writing-in-markdown",
+    "title": "Writing in Markdown",
+    "excerpt": "A quick tour of the supported syntax.",
+    "body": "Headings, lists, links like [Groundfloor docs](https://docs.groundfloor.cloud), and code like `npm run release`.\n\n```js\nconsole.log(\"hello\");\n```\n\n1. First step\n2. Second step",
+    "published": true,
+    "author": "Admin",
+    "created_at": "2026-11-25T08:00:03.194Z",
+    "updated_at": "2026-11-25T08:00:03.194Z"
+  },
+  {
+    "_id": "fx-3",
+    "slug": "draft-ideas",
+    "title": "Draft: ideas for next week",
+    "excerpt": "Not ready yet.",
+    "body": "- Topic one\n- Topic two",
+    "published": false,
+    "author": "Admin",
+    "created_at": "2026-11-26T08:00:03.194Z",
+    "updated_at": "2026-11-26T08:00:03.194Z"
+  }
+]

@@ -1,0 +1,32 @@
+{
+  "name": "@groundfloor/shell-starter-kit",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Public Module Federation remote template for Groundfloor Shell apps",
+  "scripts": {
+    "dev": "vite",
+    "dev:fixtures": "vite --mode fixtures",
+    "build": "tsc && vite build",
+    "release": "vite build && node scripts/prepare-release.mjs",
+    "preview": "vite preview",
+    "preview:release": "npm run release && npx --yes serve release -l 4175"
+  },
+  "dependencies": {
+    "lucide-react": "^0.475.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^7.2.0"
+  },
+  "devDependencies": {
+    "@originjs/vite-plugin-federation": "^1.4.1",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.5.4",
+    "postcss": "^8.5.26",
+    "tailwindcss": "^3.4.19",
+    "typescript": "^5.7.3",
+    "vite": "^6.2.0"
+  }
+}

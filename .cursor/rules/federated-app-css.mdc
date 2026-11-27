@@ -1,0 +1,21 @@
+---
+description: Use Shell Tailwind by default; isolate any other CSS framework in Shadow DOM
+alwaysApply: true
+---
+
+# Federated app CSS
+
+Shell and this kit use **Tailwind CSS v3.4** with the app root class `gf-federated-app`.
+
+- Import `src/index.css` from `App.tsx` so styles ship with `remoteEntry.js`.
+- Wrap UI in `FederatedAppRoot`.
+- Keep `important: '.gf-federated-app'` and `corePlugins.preflight: false` in `tailwind.config.js`. Never re-enable preflight in the federated build — it resets Shell chrome. The kit's scoped reset in `src/index.css` is required for standalone `npm run dev`.
+- Brand colour: `theme.primaryColor` on the manifest (applied in `FederatedAppRoot`). Header logos: `theme.logoUrl` (absolute https). Production builds: Vite `base: './'`.
+
+If the app uses a **different** CSS framework (Bootstrap, MUI global CSS, etc.):
+
+- Do not import that CSS globally.
+- Use `FederatedStyleRoot` with `import './vendor.css?inline'` so styles apply inside Shadow DOM only.
+- Portal modals to a node inside that shadow root, not `document.body`.
+
+Full guide: `docs/css-and-styling.md`. Public: https://docs.groundfloor.cloud/docs/apps/shell/styling. MCP: `docs_get` id `css-and-styling`.

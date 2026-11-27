@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "groundfloor": {
+      "command": "npx",
+      "args": ["-y", "@groundfloorcloud/mcp"]
+    }
+  }
+}

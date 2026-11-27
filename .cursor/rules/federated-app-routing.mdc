@@ -1,0 +1,35 @@
+---
+description: Federated apps must use /apps/{slug} paths — never root-absolute links
+alwaysApply: true
+---
+
+# Federated app routing
+
+The Shell hosts this remote at `/apps/{slug}/*`. Root-absolute React Router paths work in Dev Shell only if Dev Shell is also mounted there. After publish, `to="/records"` leaves the app.
+
+## Required
+
+- Route paths are **segments**, no leading slash: `path="records"`, `path="records/:id"`, `index` for the landing page.
+- Every `Link`, `NavLink`, `navigate()`, and `<Navigate>` uses `useAppPath('records')` or `useAppBasePath()` from `src/lib/useAppPath.ts`.
+- Dev Shell must nest the app under `/apps/:appSlug/*` (see `src/dev/DevShell.tsx`) so local URLs match production.
+- Manifest `routes[].path` values are segments (`home`), never `/my-app/home`.
+
+## Forbidden
+
+```tsx
+<Link to="/records">
+navigate('/records')
+<Route path="/records" />
+```
+
+## Correct
+
+```tsx
+const recordsPath = useAppPath('records');
+<Link to={recordsPath}>Records</Link>
+navigate(useAppPath('records/123'));
+<Route path="records" element={<Records />} />
+<Route path="records/:id" element={<RecordDetail />} />
+```
+
+Do not use relative `to="records"` from a sibling page — from `/apps/slug/home` that becomes `/apps/slug/home/records`. Always prefix with `useAppPath`.
